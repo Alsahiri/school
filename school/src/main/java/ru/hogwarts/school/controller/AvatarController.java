@@ -28,7 +28,8 @@ public class AvatarController {
     }
 
     @PostMapping(value = "/{studentId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadAvatar(@PathVariable Long studentId, @RequestParam MultipartFile avatar) throws IOException {
+    public ResponseEntity<String> uploadAvatar(@PathVariable Long studentId,
+                                               @RequestParam MultipartFile avatar) throws IOException {
         service.uploadAvatar(studentId, avatar);
         return ResponseEntity.ok().build();
     }

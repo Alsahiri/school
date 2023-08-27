@@ -4,10 +4,10 @@ import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Objects;
 
-@Entity
+@Entity(name = "avatars")
 public class Avatar {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String filePath;

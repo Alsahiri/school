@@ -1,5 +1,6 @@
 package ru.hogwarts.school.service.impl;
 
+import org.springframework.stereotype.Service;
 import ru.hogwarts.school.exception.EntityFoundException;
 import ru.hogwarts.school.exception.IncorrectArgumentException;
 import ru.hogwarts.school.model.Faculty;
@@ -10,7 +11,7 @@ import ru.hogwarts.school.service.StudentService;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+@Service
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
 
