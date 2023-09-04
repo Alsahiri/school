@@ -57,7 +57,7 @@ public class StudentController {
 
     @GetMapping("age")
     @Operation(summary = "Получение студентов по возрасту")
-    public ResponseEntity<Collection<Student>> getFacultyByColor(@RequestParam Integer startAge,
+    public ResponseEntity<Collection<Student>> getStudentByAge(@RequestParam Integer startAge,
                                                                  @RequestParam Integer endAge) {
         return ResponseEntity.ok(service.getStudentByAge(startAge, endAge));
     }
