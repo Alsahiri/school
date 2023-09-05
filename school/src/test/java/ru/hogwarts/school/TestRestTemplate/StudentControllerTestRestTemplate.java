@@ -35,6 +35,7 @@ public class StudentControllerTestRestTemplate {
         assertThat(createdStudentRs.getBody().getName()).isEqualTo(MOCK_STUDENT.getName());
         assertThat(createdStudentRs.getBody().getAge()).isEqualTo(MOCK_STUDENT.getAge());
     }
+
     @Test
     public void testGetStudents() {
         ResponseEntity<Student> createdStudentRs = createStudent(MOCK_STUDENT);
@@ -49,9 +50,9 @@ public class StudentControllerTestRestTemplate {
         assertThat(getStudent.getAge()).isEqualTo(createdStudent.getAge());
 
 
-        assertThat(testRestTemplate.getForEntity("http://localhost:" + port + "/student/age?statAge=10&endAge=20", Student.class))
+        assertThat(testRestTemplate.getForEntity("http://localhost:" + port + "/student/age?statAge=10&endAge=20", String.class))
                 .isNotNull();
-        assertThat(testRestTemplate.getForEntity("http://localhost:" + port + "/student/all", Student.class))
+        assertThat(testRestTemplate.getForEntity("http://localhost:" + port + "/student/all", String.class))
                 .isNotNull();
     }
 
@@ -60,12 +61,12 @@ public class StudentControllerTestRestTemplate {
         ResponseEntity<Student> createdStudentRs = createStudent(MOCK_STUDENT);
         Student createdStudent = createdStudentRs.getBody();
 
-        testRestTemplate.delete("http://localhost:" + port + "/student/"+createdStudent.getId(),Student.class);
+        testRestTemplate.delete("http://localhost:" + port + "/student/" + createdStudent.getId(), Student.class);
 
         ResponseEntity<Student> studentGetRs =
                 testRestTemplate.getForEntity("http://localhost:" + port + "/student/" + createdStudent.getId(), Student.class);
         Student getStudent = studentGetRs.getBody();
-        assertThat(getStudent.getId()).isNotNull();
+        assertThat(getStudent.getId()).isNull();
     }
 
     @Test

@@ -35,6 +35,7 @@ public class FacultyControllerTestRestTemplate {
         assertThat(createdFacultyRs.getBody().getName()).isEqualTo(MOCK_FACULTY.getName());
         assertThat(createdFacultyRs.getBody().getColor()).isEqualTo(MOCK_FACULTY.getColor());
     }
+
     @Test
     public void testGetFaculty() {
         ResponseEntity<Faculty> createdFacultyRs = createFaculty(MOCK_FACULTY);
@@ -49,10 +50,10 @@ public class FacultyControllerTestRestTemplate {
         assertThat(getFaculty.getColor()).isEqualTo(createdFaculty.getColor());
 
 
-        assertThat(testRestTemplate.getForEntity("http://localhost:" + port + "/faculty/find?name"+MOCK_FACULTY_NAME
-                +"&color"+MOCK_FACULTY_COLOR, Faculty.class))
+        assertThat(testRestTemplate.getForEntity("http://localhost:" + port + "/faculty/find?name" + MOCK_FACULTY_NAME
+                + "&color" + MOCK_FACULTY_COLOR, String.class))
                 .isNotNull();
-        assertThat(testRestTemplate.getForEntity("http://localhost:" + port + "/faculty/all", Faculty.class))
+        assertThat(testRestTemplate.getForEntity("http://localhost:" + port + "/faculty/all", String.class))
                 .isNotNull();
     }
 
@@ -61,12 +62,12 @@ public class FacultyControllerTestRestTemplate {
         ResponseEntity<Faculty> createdFacultyRs = createFaculty(MOCK_FACULTY);
         Faculty createdFaculty = createdFacultyRs.getBody();
 
-        testRestTemplate.delete("http://localhost:" + port + "/faculty/"+createdFaculty.getId(),Faculty.class);
+        testRestTemplate.delete("http://localhost:" + port + "/faculty/" + createdFaculty.getId(), Faculty.class);
 
         ResponseEntity<Faculty> facultyGetRs =
                 testRestTemplate.getForEntity("http://localhost:" + port + "/faculty/" + createdFaculty.getId(), Faculty.class);
         Faculty getFaculty = facultyGetRs.getBody();
-        assertThat(getFaculty.getId()).isNotNull();
+        assertThat(getFaculty.getId()).isNull();
     }
 
     @Test
@@ -77,7 +78,7 @@ public class FacultyControllerTestRestTemplate {
         createdFaculty.setName(MOCK_STUDENT_NEW_NAME);
 
         ResponseEntity<Faculty> updatedFacultyRs = testRestTemplate.exchange(
-                "/student",
+                "/faculty",
                 HttpMethod.PUT,
                 new HttpEntity<>(createdFaculty),
                 Faculty.class

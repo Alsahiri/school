@@ -22,7 +22,7 @@ import ru.hogwarts.school.service.StudentService;
 
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.hogwarts.school.TestConstants.*;
@@ -108,6 +108,7 @@ public class FacultyControllerWebMvcTest {
                 .andExpect(status().isOk());
 
     }
+
     @Test
     public void getAllFaculty() throws Exception {
         when(facultyRepository.findAll()).thenReturn(MOCK_FACULTIES);
@@ -125,12 +126,13 @@ public class FacultyControllerWebMvcTest {
                 MOCK_FACULTIES);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/faculty/find?name"+MOCK_FACULTY_NAME
-                                +"&color"+MOCK_FACULTY_COLOR)
+                        .get("/faculty/find?name" + MOCK_FACULTY_NAME
+                                + "&color" + MOCK_FACULTY_COLOR)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(MOCK_FACULTIES)));
     }
+
     @Test
     public void getStudentsByFaculty() throws Exception {
         when(facultyRepository.findById(any(Long.class))).thenReturn(Optional.of(MOCK_FACULTY));
