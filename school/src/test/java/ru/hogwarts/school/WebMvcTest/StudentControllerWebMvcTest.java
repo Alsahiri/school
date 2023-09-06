@@ -15,6 +15,7 @@ import ru.hogwarts.school.controller.StudentController;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.StudentService;
+import ru.hogwarts.school.service.impl.StudentServiceImpl;
 
 
 import java.util.Objects;
@@ -35,7 +36,7 @@ public class StudentControllerWebMvcTest {
     @MockBean
     private StudentRepository studentRepository;
     @SpyBean
-    private StudentService studentService;
+    private StudentServiceImpl studentService;
     @InjectMocks
     private StudentController studentController;
 
@@ -94,7 +95,7 @@ public class StudentControllerWebMvcTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(MOCK_STUDENT_ID))
-                .andExpect(jsonPath("$.name").value(MOCK_STUDENT_NAME))
+                .andExpect(jsonPath("$.name").value(MOCK_STUDENT_NEW_NAME))
                 .andExpect(jsonPath("$.age").value(MOCK_STUDENT_AGE));
     }
 
@@ -103,17 +104,18 @@ public class StudentControllerWebMvcTest {
         when(studentRepository.findById(any(Long.class))).thenReturn(Optional.of(MOCK_STUDENT));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/student/" + MOCK_STUDENT_ID)
+                        .delete("/student/" + MOCK_STUDENT_ID)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
     }
+
     @Test
     public void getAllStudents() throws Exception {
         when(studentRepository.findAll()).thenReturn(MOCK_STUDENTS);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/student/all")
+                        .get("/student/all")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(MOCK_STUDENTS)));
@@ -125,11 +127,13 @@ public class StudentControllerWebMvcTest {
                 MOCK_STUDENTS);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/student/age?startAge"+MOCK_STUDENTS_START_AGE+"&endAge"+MOCK_STUDENTS_END_AGE)
+                        .get("/student/age?startAge=" + MOCK_STUDENTS_START_AGE + "&endAge=" + MOCK_STUDENTS_END_AGE)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(MOCK_STUDENTS)));
     }
+
     @Test
     public void getFacultyByStudent() throws Exception {
         when(studentRepository.findById(any(Long.class))).thenReturn(Optional.of(MOCK_STUDENT));

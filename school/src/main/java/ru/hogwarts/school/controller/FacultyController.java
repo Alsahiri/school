@@ -56,11 +56,11 @@ public class FacultyController {
         return ResponseEntity.ok(service.getAll());
     }
 
-    @GetMapping("color")
+    @GetMapping("find")
     @Operation(summary = "Получение факультета по цвету")
-    public ResponseEntity<Collection<Faculty>> getFacultyByColororName(@RequestParam(required = false) String color,
-                                                                       @RequestParam(required = false) String name) {
-        return ResponseEntity.ok(service.getFacultyByColorOrName(color, name));
+    public ResponseEntity<Collection<Faculty>> getFacultyByColororName(@RequestParam(required = false) String name,
+                                                                       @RequestParam(required = false) String color) {
+        return ResponseEntity.ok(service.getFacultyByColorOrName(name, color));
     }
 
     @GetMapping("students/{facultyId}")

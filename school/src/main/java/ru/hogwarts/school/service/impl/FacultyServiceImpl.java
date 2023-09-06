@@ -56,7 +56,7 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public Collection<Faculty> getFacultyByColorOrName(String color, String name) {
+    public Collection<Faculty> getFacultyByColorOrName(String name, String color) {
         if (!hasText(color) && !hasText(name)) {
             throw new IncorrectArgumentException("Требуется указать корректный цвет для поиска факультета");
         }
