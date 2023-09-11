@@ -26,6 +26,9 @@ public class Avatar {
         this.student = student;
     }
 
+    public Avatar() {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,5 +1,6 @@
 package ru.hogwarts.school.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 @RestController
 @RequestMapping("student")
@@ -28,6 +30,7 @@ public class AvatarController {
     }
 
     @PostMapping(value = "/{studentId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Загрузить аватар студента")
     public ResponseEntity<String> uploadAvatar(@PathVariable Long studentId,
                                                @RequestParam MultipartFile avatar) throws IOException {
         service.uploadAvatar(studentId, avatar);
@@ -35,6 +38,7 @@ public class AvatarController {
     }
 
     @GetMapping(value = "/{id}/avatar-from-db")
+    @Operation(summary = "Скачать аватар студента")
     public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long id) {
         Avatar avatar = service.findAvatar(id);
         HttpHeaders headers = new HttpHeaders();
@@ -44,6 +48,7 @@ public class AvatarController {
     }
 
     @GetMapping(value = "/{id}/avatar-from-file")
+    @Operation(summary = "Загрузить аватар студента")
     public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException{
         Avatar avatar = service.findAvatar(id);
         Path path = Path.of(avatar.getFilePath());
@@ -54,5 +59,13 @@ public class AvatarController {
             response.setContentLength((int) avatar.getFileSize());
             is.transferTo(os);
         }
+    }
+
+    @GetMapping
+    @Operation(summary = "Список аватаров студентов постранично")
+    public ResponseEntity<List<Avatar>> getAvatarPage(@RequestParam Integer pageNumber,
+                                                      @RequestParam Integer pageSize) {
+        List<Avatar> avatars = service.getPage(pageNumber, pageSize);
+        return ResponseEntity.ok(avatars);
     }
 }

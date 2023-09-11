@@ -2,6 +2,8 @@ package ru.hogwarts.school.service.impl;
 
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.model.Avatar;
@@ -9,15 +11,18 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.AvatarRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.AvatarService;
+import ru.hogwarts.school.service.StudentService;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
-public class AvatarServiceImpl implements AvatarService{
+public class AvatarServiceImpl implements AvatarService {
 
     @Value("${path.to.avatars.folder}")
     private String avatarsDir;
@@ -30,7 +35,7 @@ public class AvatarServiceImpl implements AvatarService{
     }
 
 
-
+    @Override
     public void uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
         Student student = studentRepository.getById(studentId);
         Path filePath = Path.of(avatarsDir, student + "." + getExtensions(avatarFile.getOriginalFilename()));
@@ -52,11 +57,28 @@ public class AvatarServiceImpl implements AvatarService{
         avatar.setData(avatarFile.getBytes());
         avatarRepository.save(avatar);
     }
+
     private String getExtensions(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
+    @Override
     public Avatar findAvatar(Long studentId) {
         return avatarRepository.findByStudentId(studentId).orElseThrow();
     }
+
+    @Override
+    public Avatar findOrCreateAvatar(Long studentId) {
+        return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
+    }
+
+    @Override
+    public List<Avatar> getPage(Integer pageNumber, Integer pageSize) {
+        return avatarRepository.findAll(PageRequest.of(pageNumber - 1, pageSize)).getContent();
+    }
+    private Path buildFilePath(Student student, String fileName) {
+        return Path.of(avatarsDir, student.getId() + "-" + student.getName() + "-" +
+                getExtensions(Objects.requireNonNull(fileName)));
+    }
+
 }

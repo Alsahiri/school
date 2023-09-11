@@ -9,6 +9,7 @@ import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 @Service
@@ -57,6 +58,22 @@ public class StudentServiceImpl implements StudentService {
         checkAge(endAge);
         return studentRepository.findStudentsByAgeBetween(startAge, endAge);
     }
+
+    @Override
+    public Integer getCount() {
+        return studentRepository.getCount();
+    }
+
+    @Override
+    public Float getAverageAge() {
+        return studentRepository.getAverageAge();
+    }
+
+    @Override
+    public List<Student> getLastFive() {
+        return studentRepository.getLastFive();
+    }
+
     private void checkAge(Integer age) {
         if (age <= 10 || age >= 100) {
             throw new IncorrectArgumentException("Требуется указать корректный воззраст для поиска студента");
