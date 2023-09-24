@@ -58,7 +58,7 @@ public class StudentController {
     @GetMapping("age")
     @Operation(summary = "Получение студентов по возрасту")
     public ResponseEntity<Collection<Student>> getStudentByAge(@RequestParam Integer startAge,
-                                                                 @RequestParam Integer endAge) {
+                                                               @RequestParam Integer endAge) {
         return ResponseEntity.ok(service.getStudentByAge(startAge, endAge));
     }
 
@@ -82,7 +82,32 @@ public class StudentController {
 
     @GetMapping("last")
     @Operation(summary = "Получение 5-ти последних студентов")
-    public ResponseEntity<Collection> getLastFive() {
+    public ResponseEntity<Collection<Student>> getLastFive() {
         return ResponseEntity.ok(service.getLastFive());
+    }
+
+    @GetMapping("names-by-a")
+    @Operation(summary = "Получение имен студентов на букву А")
+    public ResponseEntity<Collection> getNamesByA() {
+        return ResponseEntity.ok(service.getNamesByA());
+    }
+
+    @GetMapping("age/average-stream")
+    @Operation(summary = "Получение среднего возраста студентов (stream)")
+    public ResponseEntity<Double> getAverageAgeByStream() {
+        return ResponseEntity.ok(service.getAverageAgeByStream());
+    }
+
+    @GetMapping("/print-names")
+    @Operation(summary = "Вывод в лог информации о студентах в разных потоках")
+    public ResponseEntity<Void> printStudentsNames() {
+        service.printStudents();
+        return ResponseEntity.ok().build();
+    }
+    @GetMapping("/print-names-sync")
+    @Operation(summary = "Вывод в лог информации о студентах в разных потоках с синхронизацией")
+    public ResponseEntity<Void> printStudentsNamesSync() {
+        service.printStudentsSync();
+        return ResponseEntity.ok().build();
     }
 }

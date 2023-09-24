@@ -1,6 +1,5 @@
 package ru.hogwarts.school.service;
 
-import org.springframework.data.jpa.repository.Query;
 import ru.hogwarts.school.model.Student;
 
 import java.util.Collection;
@@ -23,4 +22,13 @@ public interface StudentService {
     Float getAverageAge();
 
     List<Student> getLastFive();
+
+    List<String> getNamesByA();
+
+    Double getAverageAgeByStream();
+
+    void printStudents();
+
+    void printStudentsSync();
+
 }

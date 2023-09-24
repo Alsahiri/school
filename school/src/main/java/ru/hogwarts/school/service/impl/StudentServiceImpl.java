@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.exception.EntityFoundException;
 import ru.hogwarts.school.exception.IncorrectArgumentException;
-import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.StudentService;
@@ -14,6 +13,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.util.Locale.filter;
+
 @Service
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
@@ -92,6 +94,66 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> getLastFive() {
         logger.info("Was invoked method getLastFive for students");
         return studentRepository.getLastFive();
+    }
+
+    @Override
+    public List<String> getNamesByA() {
+        logger.info("Was invoked method getNameByA for students");
+        return studentRepository.findAll().stream()
+                .filter(s -> s.getName().startsWith("A"))
+                .map(n -> n.getName())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Double getAverageAgeByStream() {
+        logger.info("Was invoked method getAverageAgeByStream for students");
+        return studentRepository.findAll().stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0.0f);
+    }
+
+    @Override
+    public void printStudents() {
+        List<Student> students = studentRepository.findAll();
+
+        if (students.size() >= 6) {
+            students.subList(0, 2).forEach(this::printsStudentName);
+
+            printStudents(students.subList(2, 4));
+            printStudents(students.subList(4, 6));
+        }
+    }
+
+    @Override
+    public void printStudentsSync() {
+        List<Student> students = studentRepository.findAll();
+
+        if (students.size() >= 6) {
+            students.subList(0, 2).forEach(this::printsStudentNameSync);
+
+            printStudentsSync(students.subList(2, 4));
+            printStudentsSync(students.subList(4, 6));
+        }
+    }
+
+    private void printsStudentName(Student student) {
+        logger.info("Student " + student.getId() + " " + student.getName());
+    }
+    private synchronized void printsStudentNameSync(Student student) {
+        logger.info("Student " + student.getId() + " " + student.getName());
+    }
+
+    private void printStudents(List<Student> students) {
+        new Thread(() -> {
+            students.forEach(this::printsStudentName);
+        }).start();
+    }
+    private void printStudentsSync(List<Student> students) {
+        new Thread(() -> {
+            students.forEach(this::printsStudentNameSync);
+        }).start();
     }
 
     private void checkAge(Integer age) {
