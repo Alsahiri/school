@@ -20,6 +20,7 @@ import static java.util.Locale.filter;
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
+    Integer counter = 0;
 
     public StudentServiceImpl(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
@@ -131,17 +132,18 @@ public class StudentServiceImpl implements StudentService {
         List<Student> students = studentRepository.findAll();
 
         if (students.size() >= 6) {
-            students.subList(0, 2).forEach(this::printsStudentNameSync);
-
-            printStudentsSync(students.subList(2, 4));
-            printStudentsSync(students.subList(4, 6));
+            printsStudentNameSync(students);
+            printsStudentNameSync(students);
+            printStudentsSync(students);
+            printStudentsSync(students);
         }
     }
 
     private void printsStudentName(Student student) {
         logger.info("Student " + student.getId() + " " + student.getName());
     }
-    private synchronized void printsStudentNameSync(Student student) {
+    private synchronized void printsStudentNameSync(List<Student> students) {
+        Student student = students.get(counter++ % students.size());
         logger.info("Student " + student.getId() + " " + student.getName());
     }
 
@@ -152,7 +154,8 @@ public class StudentServiceImpl implements StudentService {
     }
     private void printStudentsSync(List<Student> students) {
         new Thread(() -> {
-            students.forEach(this::printsStudentNameSync);
+            printsStudentNameSync(students);
+            printsStudentNameSync(students);
         }).start();
     }
 
@@ -162,5 +165,10 @@ public class StudentServiceImpl implements StudentService {
 
             throw new IncorrectArgumentException("Требуется указать корректный воззраст для поиска студента");
         }
+    }
+
+    private void studentsCounter(List<Student> students) {
+        int counter = 1;
+
     }
 }
